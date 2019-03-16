@@ -4,6 +4,7 @@ import Persons from '../components/Persons/Persons';
 import Cockpit from '../components/Cockpit/Cockpit';
 import withClass from '../hoc/withClass';
 import Aux from '../hoc/Aux';
+import AuthContext from '../context/auth-context';
 
 class App extends Component {
 
@@ -20,8 +21,9 @@ class App extends Component {
     ],
     otherState: 'some other value',
     showPersons: false,
-    changeCounter: 0
-  }
+    changeCounter: 0,
+    authenticated: false
+  };
 
   static getDerivedStateFromProps(props, state) {
     console.log('[App.js] getDerivedStateFromProps', props);
@@ -58,19 +60,23 @@ class App extends Component {
         changeCounter: prevState.changeCounter + 1
       };
     });
-  }
+  };
 
   deletePersonHandler = personIndex => {
     // const persons = this.state.persons.slice();
     const persons = [...this.state.persons];
     persons.splice(personIndex, 1);
     this.setState({ persons: persons });
-  }
+  };
 
   togglePersonsHandler = () => {
     const doesShow = this.state.showPersons;
     this.setState({ showPersons: !doesShow });
-  }
+  };
+
+  loginHandler = () => {
+    this.setState({ authenticated: true });
+  };
 
   render() {
     console.log('[App.js] render');
@@ -87,12 +93,14 @@ class App extends Component {
 
     return (
       <Aux>
-        <Cockpit
-          title={this.props.appTitle}
-          showPersons={this.state.showPersons}
-          personLength={this.state.persons.length}
-          clicked={this.togglePersonsHandler} />
-        {persons}
+        <AuthContext.Provider value={{authenticated: this.state.authenticated, login: this.loginHandler}}>
+          <Cockpit
+            title={this.props.appTitle}
+            showPersons={this.state.showPersons}
+            personLength={this.state.persons.length}
+            clicked={this.togglePersonsHandler} />
+          {persons}
+        </AuthContext.Provider>
       </Aux>
     );
     // return React.createElement('div', { className: 'App' }, React.createElement('h1', null, 'Does this work now?'));
