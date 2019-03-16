@@ -2,7 +2,8 @@ import React, { Component } from 'react';
 import classes from './App.css';
 import Persons from '../components/Persons/Persons';
 import Cockpit from '../components/Cockpit/Cockpit';
-import WithClass from '../hoc/WithClass';
+import withClass from '../hoc/withClass';
+import Aux from '../hoc/Aux';
 
 class App extends Component {
 
@@ -79,18 +80,18 @@ class App extends Component {
     }
 
     return (
-      <WithClass classes={classes.App}>
+      <Aux>
         <Cockpit
           title={this.props.appTitle}
           showPersons={this.state.showPersons}
           personLength={this.state.persons.length}
           clicked={this.togglePersonsHandler} />
         {persons}
-      </WithClass>
+      </Aux>
     );
     // return React.createElement('div', { className: 'App' }, React.createElement('h1', null, 'Does this work now?'));
   }
 
 }
 
-export default App;
+export default withClass(App, classes.App);
